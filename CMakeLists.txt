@@ -32,12 +32,6 @@ ExternalProject_Add(protobuf
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf
 )
 
-if (EXISTS "/etc/lsb-release")
-  set(_FINDPACKAGE_PROTOBUF_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib/cmake/protobuf")
-elseif (EXISTS "/etc/redhat-release")
-  set(_FINDPACKAGE_PROTOBUF_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib64/cmake/protobuf")
-endif()
-
 set(PROTOC "${CMAKE_CURRENT_BINARY_DIR}/protobuf/bin/protoc")
 
 # zlib
@@ -64,7 +58,7 @@ ExternalProject_Add(grpc
     -DgRPC_BUILD_TESTS:BOOL=OFF
     -DgRPC_PROTOBUF_PROVIDER:STRING=package
     -DgRPC_PROTOBUF_PACKAGE_TYPE:STRING=CONFIG
-    -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
+    -DProtobuf_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib64/cmake/protobuf
     -DgRPC_ZLIB_PROVIDER:STRING=package
     -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
     -DgRPC_CARES_PROVIDER:STRING=package
@@ -86,7 +80,7 @@ ExternalProject_Add(gflags
 )
 
 # spdlog
-set(SPDLOG_VERSION v1.5.0)
+set(SPDLOG_VERSION v1.10.0)
 set(SPDLOG_URL https://github.com/gabime/spdlog/archive/${SPDLOG_VERSION}.zip)
 
 ExternalProject_Add(spdlog
@@ -99,6 +93,7 @@ ExternalProject_Add(spdlog
 
 # abseilcpp
 set(ABSL_VERSION 20210324.2)
+#set(ABSL_VERSION 20211102.0)
 set(ABSL_URL https://github.com/abseil/abseil-cpp/archive/${ABSL_VERSION}.zip)
 ExternalProject_Add(absl
   PREFIX absl
@@ -108,12 +103,6 @@ ExternalProject_Add(absl
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/absl
 )
 
-if (EXISTS "/etc/lsb-release")
-  set(_FINDPACKAGE_ABSL_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/absl/lib/cmake/absl")
-elseif (EXISTS "/etc/redhat-release")
-  set(_FINDPACKAGE_ABSL_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/absl/lib64/cmake/absl")
-endif()
-
 # examples
 ExternalProject_Add(examples
   PREFIX examples 
@@ -121,13 +110,13 @@ ExternalProject_Add(examples
   BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/examples"
   INSTALL_COMMAND ""
   CMAKE_CACHE_ARGS
-        -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
+        -DProtobuf_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib64/cmake/protobuf
         -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
         -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
         -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
         -Dgflags_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/gflags/lib/cmake/gflags
         -Dspdlog_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/spdlog/lib/cmake/spdlog
-        -Dabsl_DIR:PATH=${_FINDPACKAGE_ABSL_CONFIG_DIR}
+	-Dabsl_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/absl/lib64/cmake/absl
   DEPENDS protobuf grpc spdlog gflags absl
 )
 
@@ -137,12 +126,12 @@ ExternalProject_Add(bpfki
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src"
   BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/bin"
   CMAKE_CACHE_ARGS
-        -DProtobuf_DIR:PATH=${_FINDPACKAGE_PROTOBUF_CONFIG_DIR}
+	-DProtobuf_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/protobuf/lib64/cmake/protobuf
         -Dc-ares_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/c-ares/lib/cmake/c-ares
         -DZLIB_ROOT:STRING=${CMAKE_CURRENT_BINARY_DIR}/zlib
         -DgRPC_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/grpc/lib/cmake/grpc
         -Dgflags_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/gflags/lib/cmake/gflags
         -Dspdlog_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/spdlog/lib/cmake/spdlog
-        -Dabsl_DIR:PATH=${_FINDPACKAGE_ABSL_CONFIG_DIR}
+	-Dabsl_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/absl/lib64/cmake/absl
   DEPENDS protobuf grpc spdlog gflags absl
 )
