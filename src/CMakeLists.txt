@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11.4)
 project(bpfki)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/bcc/compat -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/bcc/compat -std=c++17")
 
 # Find 3rd parties
 set(protobuf_MODULE_COMPATIBLE TRUE)
